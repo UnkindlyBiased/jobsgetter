@@ -7,7 +7,7 @@ export const AboutScreen = ({ navigation }) => {
             <Text>Some information</Text>
             <Button
                 title="Go back"
-                onPress={() => navigation.goBack()} />
+                onPress={() => navigation.navigate('Loading')} />
         </View>
     );
 };
