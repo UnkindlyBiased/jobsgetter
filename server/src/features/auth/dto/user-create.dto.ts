@@ -1,6 +1,6 @@
 import { IsEmail, IsString, IsStrongPassword, MaxLength, MinLength } from "class-validator";
 
-export class CreateUserDto {
+export class UserCreateDto {
     @IsString()
     @MinLength(3, { message: 'The given name is insufficently short' })
     @MaxLength(30, { message: 'The given name is insufficently long'})

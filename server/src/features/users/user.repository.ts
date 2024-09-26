@@ -4,7 +4,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { UserEntity } from "./user.entity";
 import { PartialKeys } from "../../../utils/types/partial-keys";
-import { CreateUserDto } from "../auth/dto/create-user.dto";
+import { UserCreateDto } from "../auth/dto/user-create.dto";
 
 @Injectable()
 export class UserRepository {
@@ -23,7 +23,7 @@ export class UserRepository {
 
         return user
     }
-    async createUser(input: CreateUserDto): Promise<void> {
+    async createUser(input: UserCreateDto): Promise<void> {
         const entity = this.userRepository.create(input)
 
         await this.userRepository.insert(entity)

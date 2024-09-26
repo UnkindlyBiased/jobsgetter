@@ -2,16 +2,20 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import { hash, compare } from 'bcrypt'
 
 import { UserRepository } from "../users/user.repository";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { UserCreateDto } from "./dto/user-create.dto";
 import { UserLoginDto } from "./dto/user-login.dto";
+import { JwtService } from "@nestjs/jwt";
+import { UserPayloadDto } from "./dto/user-payload.dto";
+import { JwtPayloadDto } from "./dto/jwt-payload.dto";
 
 @Injectable()
 export class AuthService {
     constructor(
+        private readonly jwtService: JwtService,
         private readonly repo: UserRepository
     ) {}
 
-    async registrate(input: CreateUserDto) {
+    async registrate(input: UserCreateDto) {
         const exists = await this.repo.isUserExistingByCondition({ emailAddress: input.emailAddress })
         if (exists) {
             throw new ConflictException('The given email is already in usage')
@@ -24,16 +28,19 @@ export class AuthService {
     }
     async login(input: UserLoginDto) {
         const userData = await this.repo.getUserByCondition({ emailAddress: input.emailAddress })
-        if (!userData) {
-            throw new NotFoundException('No users exist by this email')
-        }
 
         const isPasswordEqual = await compare(input.password, userData.password)
         if (!isPasswordEqual) {
             throw new ForbiddenException("Passwords aren't equal")
         }
 
-        const { password, ...rest } = userData
-        return rest
+        const { password, ...user } = userData
+        return user
+    }
+    async generateJwtToken(userData: UserPayloadDto): Promise<string> {
+        const payload: JwtPayloadDto = { sub: userData }
+        const token = await this.jwtService.signAsync(payload)
+        
+        return token
     }
 }
