@@ -5,9 +5,10 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 
 import { JwtPayloadDto } from "../../src/features/auth/dto/jwt-payload.dto";
 import { UserPayloadDto } from "../../src/features/auth/dto/user-payload.dto";
+import { ACCESS_TOKEN_STRATEGY } from "../constants/code.constants";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class AccessTokenStrategy extends PassportStrategy(Strategy, ACCESS_TOKEN_STRATEGY) {
     constructor(
         private configService: ConfigService
     ) {
