@@ -3,10 +3,9 @@ import {
     Controller,
     Get,
     Post,
-    Res,
     UseGuards,
+    UseInterceptors,
 } from "@nestjs/common";
-import { Response } from "express";
 
 import { AuthService } from "./auth.service";
 import { UserCreateDto } from "./dto/user-create.dto";
@@ -15,15 +14,11 @@ import { User } from "../../../utils/decorators/user.decorator";
 import { UserPayloadDto } from "./dto/user-payload.dto";
 import { AccessTokenGuard } from "../../../utils/guards/access-token.guard";
 import { RefreshTokenGuard } from "../../../utils/guards/refresh-token.guard";
-import { CookieHelper } from "../../../utils/helpers/cookie.helper";
-import { REFRESH_TOKEN_COOKIE } from "../../../utils/constants/code.constants";
+import { RefreshCookieInterceptor } from "../../../utils/interceptors/refresh-cookie.interceptor";
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private service: AuthService,
-        private cookieHelper: CookieHelper,
-    ) {}
+    constructor(private service: AuthService) {}
 
     @Post('registrate')
     async registrate(@Body() input: UserCreateDto) {
@@ -32,28 +27,26 @@ export class AuthController {
         return { message: 'Registration was successful' }
     };
 
+    @UseInterceptors(RefreshCookieInterceptor)
     @UseGuards(LocalGuard)
     @Post('login')
     async login(
         @User() user: UserPayloadDto,
-        @Res() res: Response
     ) {
         const tokens = await this.service.generateTokens(user);
-        this.cookieHelper.setCookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken, res)
 
-        res.send({ user, tokens })
+        return { user, tokens }
     };
 
+    @UseInterceptors(RefreshCookieInterceptor)
     @UseGuards(RefreshTokenGuard)
     @Get('refresh')
     async refresh(
         @User() user: UserPayloadDto,
-        @Res() res: Response
     ) {
         const tokens = await this.service.generateTokens(user)
-        this.cookieHelper.setCookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken, res)
 
-        res.send({ user, tokens })
+        return { user, tokens }
     }
 
     @UseGuards(AccessTokenGuard)

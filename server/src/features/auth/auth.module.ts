@@ -14,16 +14,7 @@ import { CookieHelper } from "../../../utils/helpers/cookie.helper";
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (config: ConfigService) => ({
-                secret: config.get('ACCESS_TOKEN_SECRET'),
-                signOptions: {
-                    expiresIn: config.get('ACCESS_TOKEN_EXPIRES_IN')
-                }
-            })
-        }),
+        JwtModule.register({}),
         UserModule,
     ],
     controllers: [AuthController],
