@@ -2,14 +2,13 @@ import { ConflictException, ForbiddenException, Injectable, UnauthorizedExceptio
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { hash, compare } from 'bcrypt'
+import { plainToInstance } from "class-transformer";
 
 import { UserRepository } from "../users/user.repository";
 import { UserCreateDto } from "./dto/user-create.dto";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { UserPayloadDto } from "./dto/user-payload.dto";
 import { JwtPayloadDto } from "./dto/jwt-payload.dto";
-import { TokenHelper } from "../../../utils/helpers/token.helper";
-import { instanceToInstance, plainToInstance } from "class-transformer";
 
 @Injectable()
 export class AuthService {
@@ -17,7 +16,6 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
         private userRepo: UserRepository,
-        private tokenHelper: TokenHelper
     ) {}
 
     async registrate(input: UserCreateDto): Promise<void> {
@@ -43,13 +41,8 @@ export class AuthService {
             excludeExtraneousValues: true
         })
     }
-    async refresh(refreshToken: string): Promise<UserPayloadDto> {
-        const payload = await this.tokenHelper.verifyRefreshToken(refreshToken)
-        if (!payload) {
-            throw new UnauthorizedException('Refresh token is not valid')
-        }
-
-        const userData = await this.userRepo.getUserByCondition({ emailAddress: payload.sub.emailAddress })
+    async generatePayload(id: string): Promise<UserPayloadDto> {
+        const userData = await this.userRepo.getUserByCondition({ id })
 
         return plainToInstance(UserPayloadDto, userData, {
             excludeExtraneousValues: true

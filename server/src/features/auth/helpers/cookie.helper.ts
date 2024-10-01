@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Response } from "express";
 
-import { REFRESH_TOKEN_LIFE_MS } from "../constants/code.constants";
+import { REFRESH_TOKEN_LIFE_MS } from "../../../../utils/constants/code.constants";
 
 @Injectable()
 export class CookieHelper {
@@ -9,7 +9,7 @@ export class CookieHelper {
         res.cookie(key, value, {
             maxAge: REFRESH_TOKEN_LIFE_MS,
             httpOnly: true,
-            sameSite: false
+            sameSite: "none"
         });
     }
     clearCookie(key: string, res: Response) {

@@ -3,7 +3,7 @@ import { ExecutionContext, Injectable } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
 
-import { REFRESH_TOKEN_STRATEGY } from "../constants/code.constants";
+import { REFRESH_TOKEN_STRATEGY } from "../../../../utils/constants/code.constants";
 
 @Injectable()
 export class RefreshTokenGuard extends AuthGuard(REFRESH_TOKEN_STRATEGY) {

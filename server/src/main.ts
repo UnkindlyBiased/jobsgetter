@@ -9,6 +9,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule)
 
     app.use(cookieParser())
+    app.enableCors({ credentials: true })
 
     app.useGlobalFilters(new HttpExceptionFilter())
     app.useGlobalPipes(new ValidationPipe({

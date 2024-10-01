@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import { JwtPayloadDto } from "../../src/features/auth/dto/jwt-payload.dto";
+import { JwtPayloadDto } from "../dto/jwt-payload.dto";
 
 @Injectable()
 export class TokenHelper {

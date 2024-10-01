@@ -7,7 +7,7 @@ import {
 import { map, Observable } from 'rxjs';
 
 import { CookieHelper } from '../helpers/cookie.helper';
-import { REFRESH_TOKEN_COOKIE } from '../constants/code.constants';
+import { REFRESH_TOKEN_COOKIE } from '../../../../utils/constants/code.constants';
 
 @Injectable()
 export class RefreshCookieInterceptor implements NestInterceptor {
