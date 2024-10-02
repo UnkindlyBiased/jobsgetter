@@ -1,11 +1,15 @@
 import { NestFactory, Reflector } from "@nestjs/core";
 import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
+import * as cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
 import { HttpExceptionFilter } from "../utils/filters/exception.filter";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
+
+    app.use(cookieParser())
+    app.enableCors({ credentials: true })
 
     app.useGlobalFilters(new HttpExceptionFilter())
     app.useGlobalPipes(new ValidationPipe({
