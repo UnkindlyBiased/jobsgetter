@@ -1,6 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
+import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common";
 import { hash, compare } from 'bcrypt'
 import { plainToInstance } from "class-transformer";
 
@@ -9,13 +7,13 @@ import { UserCreateDto } from "./dto/user-create.dto";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { UserPayloadDto } from "./dto/user-payload.dto";
 import { JwtPayloadDto } from "./dto/jwt-payload.dto";
+import { TokenHelper } from "./helpers/token.helper";
 
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
-        private configService: ConfigService,
         private userRepo: UserRepository,
+        private tokenHelper: TokenHelper,
     ) {}
 
     async registrate(input: UserCreateDto): Promise<void> {
@@ -51,15 +49,8 @@ export class AuthService {
     async generateTokens(userData: UserPayloadDto) {
         const payload: JwtPayloadDto = { sub: userData }
 
-        const accessToken = await this.jwtService.signAsync(payload, {
-            secret: this.configService.get('ACCESS_TOKEN_SECRET'),
-            expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN')
-        })
-
-        const refreshToken = await this.jwtService.signAsync(payload, {
-            secret: this.configService.get('REFRESH_TOKEN_SECRET'),
-            expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN')
-        });
+        const accessToken = await this.tokenHelper.signAccessToken(payload)
+        const refreshToken = await this.tokenHelper.signRefreshToken(payload)
         
         return { accessToken, refreshToken }
     }

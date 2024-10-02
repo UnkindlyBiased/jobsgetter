@@ -10,15 +10,16 @@ export class TokenHelper {
         private jwtService: JwtService,
         private configService: ConfigService
     ) {}
-    async verifyRefreshToken(refreshToken: string) {
-        try {
-            const payload: JwtPayloadDto = await this.jwtService.verifyAsync(refreshToken, {
-                secret: this.configService.get('REFRESH_TOKEN_SECRET')
-            })
-
-            return payload
-        } catch {
-            return null
-        }
+    async signAccessToken(payload: JwtPayloadDto) {
+        return await this.jwtService.signAsync(payload, {
+            secret: this.configService.get('ACCESS_TOKEN_SECRET'),
+            expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN')
+        })
+    }
+    async signRefreshToken(payload: JwtPayloadDto) {
+        return await this.jwtService.signAsync(payload, {
+            secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+            expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN')
+        })
     }
 }
