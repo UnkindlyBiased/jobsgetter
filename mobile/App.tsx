@@ -1,23 +1,28 @@
 import React from 'react';
+import { Platform, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { HomeScreen } from './src/screens/home.screen';
-import { AboutScreen } from './src/screens/about.screen';
-import { LoadingScreen } from './src/screens/loading.screen';
-
-const Stack = createNativeStackNavigator();
+import { AuthStack } from './src/stacks/auth.stack';
+import './unistyles';
 
 const App = () => {
+    const { styles } = useStyles(stylesheet);
+
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Home" component={HomeScreen} />
-                <Stack.Screen name="Loading" component={LoadingScreen} />
-                <Stack.Screen name="About" component={AboutScreen} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <SafeAreaView style={styles.android}>
+            <NavigationContainer>
+                <AuthStack />
+            </NavigationContainer>
+        </SafeAreaView>
     );
 };
+
+const stylesheet = createStyleSheet({
+    android: {
+        flex: 1,
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    },
+});
 
 export default App;
