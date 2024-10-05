@@ -1,6 +1,8 @@
-import * as React from 'react';
-import { TextInput, TextInputProps } from 'react-native';
+import React, { forwardRef, useState } from 'react';
+import { TextInput, TextInputProps, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import { colors, typography } from '../../../utils/themes';
 
 type InputProps = Omit<TextInputProps, 'enabled' | 'selectTextOnFocus'> & {
     disabled?: boolean,
@@ -12,39 +14,56 @@ const Input = ({ style, size, disabled, ...props }: InputProps, ref: React.Ref<T
     const { styles: mainStyles } = useStyles(stylesheet);
     const { styles: sizedStyles } = useStyles(sizedStylesheet);
 
-    const [isFocused, setIsFocused] = React.useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
     return (
-        <TextInput
-            {...props}
-            ref={ref}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            editable={!disabled}
-            selectTextOnFocus={!disabled}
-            style={[
-                style,
-                mainStyles.input,
-                isFocused && mainStyles.focused,
-                size ? sizedStyles[size] : sizedStyles.md,
-            ]} />
+        <View style={[
+            mainStyles.wrapper,
+            isFocused && mainStyles.wrapperFocused,
+        ]}>
+            <TextInput
+                {...props}
+                ref={ref}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                editable={!disabled}
+                selectTextOnFocus={!disabled}
+                style={[
+                    style,
+                    mainStyles.input,
+                    disabled && mainStyles.disabled,
+                    isFocused && mainStyles.focused,
+                    size ? sizedStyles[size] : sizedStyles.md,
+                ]} />
+        </View>
     );
 };
 
 const stylesheet = createStyleSheet({
+    wrapper: {
+        paddingVertical: 4,
+    },
+    wrapperFocused: {
+        paddingVertical: 3,
+    },
     input: {
         borderWidth: 1,
-        borderColor: '#97c3f0',
+        borderColor: colors.primary[300],
         borderRadius: 12,
 
         fontSize: 15,
 
         backgroundColor: 'white',
         elevation: 3,
+
+        fontFamily: typography.regular,
     },
     focused: {
-        borderColor: '#0b6bcb',
+        borderColor: colors.primary[500],
         borderWidth: 2,
+    },
+    disabled: {
+        borderColor: colors.neutral[600],
     },
 });
 
@@ -63,4 +82,4 @@ const sizedStylesheet = createStyleSheet({
     },
 });
 
-export default React.forwardRef(Input);
+export default forwardRef(Input);
