@@ -1,5 +1,3 @@
 export type AppStackParamsList = {
-    Home: undefined,
-    Loading: undefined,
-    About: undefined
+    /* There will be smth soon */
 }

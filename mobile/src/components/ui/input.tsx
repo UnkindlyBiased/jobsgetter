@@ -10,7 +10,7 @@ type InputProps = Omit<TextInputProps, 'enabled' | 'selectTextOnFocus'> & {
     size?: 'sm' | 'md' | 'lg'
 }
 
-const Input = ({ style, size, disabled, ...props }: InputProps, ref: React.Ref<TextInput>) => {
+const InputWithoutRef = ({ style, size, disabled, ...props }: InputProps, ref: React.Ref<TextInput>) => {
     const { styles: mainStyles } = useStyles(stylesheet);
     const { styles: sizedStyles } = useStyles(sizedStylesheet);
 
@@ -82,4 +82,4 @@ const sizedStylesheet = createStyleSheet({
     },
 });
 
-export default forwardRef(Input);
+export const Input = forwardRef(InputWithoutRef);

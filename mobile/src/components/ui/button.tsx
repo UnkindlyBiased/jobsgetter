@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 import { Platform, Pressable, PressableProps, Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { colors, typography } from '../../../utils/themes';
+import { RIPPLE_COLOR } from '../../../utils/constants/style.constants';
 
 type ButtonProps = PressableProps & {
     children?: React.ReactNode
@@ -14,7 +15,7 @@ type ButtonProps = PressableProps & {
     width?: number | '100%'
 }
 
-const Button = ({ children, variant, style, borderRadius, width, ...props }: ButtonProps) => {
+const ButtonWithoutRef = ({ children, variant, style, borderRadius, width, ...props }: ButtonProps, ref: Ref<View>) => {
     const { styles } = useStyles(stylesheet);
 
     const variants = {
@@ -26,11 +27,12 @@ const Button = ({ children, variant, style, borderRadius, width, ...props }: But
         <View style={[styles.wrapper, { borderRadius, width }]}>
             <Pressable
                 {...props}
-                android_ripple={{ color: 'rgba(0, 0, 0, 0.15)' }}
+                ref={ref}
+                android_ripple={{ color: RIPPLE_COLOR }}
                 style={({ pressed }) => [
                     Platform.select({
                         ios: {
-                            backgroundColor: pressed ? 'rgba(0, 0, 0, 0.15)' : 'transparent',
+                            backgroundColor: pressed ? RIPPLE_COLOR : 'transparent',
                         },
                     }),
                     styles.defaultOuter,
@@ -75,4 +77,4 @@ const stylesheet = createStyleSheet({
     },
 });
 
-export default Button;
+export const Button = forwardRef(ButtonWithoutRef);

@@ -1,28 +1,36 @@
-import React from 'react';
-import { Platform, SafeAreaView, StatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { Button, Platform, StatusBar, StyleSheet, Text } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { createStyleSheet, useStyles } from "react-native-unistyles"
+import { NavigationContainer } from "@react-navigation/native"
 
-import { AuthStack } from './src/stacks/auth.stack';
-import './unistyles';
+import './unistyles'
 
 const App = () => {
-    const { styles } = useStyles(stylesheet);
+    const { styles } = useStyles(stylesheet)
 
     return (
-        <SafeAreaView style={styles.android}>
-            <NavigationContainer>
-                <AuthStack />
-            </NavigationContainer>
-        </SafeAreaView>
-    );
-};
+        <NavigationContainer>
+            <SafeAreaView style={[styles.container, styles.ios]}>
+                <Text style={stylesheet.text}>Hello</Text>
+                <Button title="Hello" onPress={() => console.log('hi')} />
+            </SafeAreaView>
+        </NavigationContainer>
+    )
+}
 
 const stylesheet = createStyleSheet({
-    android: {
+    container: {
         flex: 1,
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        justifyContent: "center",
+        alignItems: "center",
     },
-});
+    text: {
+        fontSize: 25,
+    },
+    ios: {
+        flex: 1,
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+    }
+})
 
-export default App;
+export default App

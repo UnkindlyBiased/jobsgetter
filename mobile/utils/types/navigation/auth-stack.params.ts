@@ -1,3 +1,4 @@
 export type AuthStackParamsList = {
-    /* smth will be here */
+    Start: undefined
+    Login: undefined
 }
